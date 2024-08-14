@@ -5,6 +5,8 @@ import urllib
 
 valid_link_keys = (
     {"href", "label"},
+    {"href", "label", "target"},
+    {"href", "label", "download"},
     {"href", "label", "title"},
     {"href", "label", "title", "description"},
     {"href", "label", "description"},
@@ -92,11 +94,17 @@ def is_sensible_href(href):
 
 
 def build_link(item):
-    html = '<a href="{href}"{title}>{label}</a>'.format(
+    html = '<a href="{href}"{title}{target}{download}>{label}</a>'.format(
         href=markupsafe.escape(item["href"]),
         label=markupsafe.escape(item["label"] or "") or "&nbsp;",
         title=' title="{}"'.format(markupsafe.escape(item["title"]))
         if item.get("title")
+        else "",
+        target=' target="{}"'.format(markupsafe.escape(item["target"]))
+        if item.get("target")
+        else "",
+        download=' download="{}"'.format(markupsafe.escape(item["download"]))
+        if item.get("download")
         else "",
     )
     if item.get("description"):
